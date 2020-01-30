@@ -1,0 +1,13 @@
+{
+    "name": "kawikaconnell/todo-cli",
+    "description": "A cli todo app",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Kawika Connell",
+            "email": "kawika.connell@batalp.com"
+        }
+    ],
+    "minimum-stability": "stable"
+}
