@@ -1,5 +1,5 @@
 {
-    "name": "kawikaconnell/todo-cli",
+    "name": "kawikaconnell/todo",
     "description": "A cli todo app",
     "type": "project",
     "license": "MIT",
@@ -9,5 +9,15 @@
             "email": "kawika.connell@batalp.com"
         }
     ],
-    "minimum-stability": "stable"
+    "minimum-stability": "stable",
+    "require-dev": {
+        "phpunit/phpunit": "^7.5"
+    },
+    "autoload": {
+        "psr-4": { "KawikaConnell\\Todo\\": "." },
+        "files": ["functions.php"]
+    },
+    "scripts": {
+        "test": "phpunit --bootstrap vendor/autoload.php tests"
+    }
 }
