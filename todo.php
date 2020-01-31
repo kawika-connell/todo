@@ -32,15 +32,27 @@ DOC;
  */
 const    COMMAND_INIT = 'init';
 function command_init(Input $input) {
-    openTodoFile(getcwd())->fwrite('');
+    $currentDirectory = getcwd();
+
+    if (todoFileExists($currentDirectory)) {
+        echo "todo.txt already exists in {$currentDirectory}";
+        return;
+    }
+
+    openTodoFile($currentDirectory)->fwrite('');
     echo "Created todo.txt in {$currentDirectory}";
 }
 
+/**
+ * Command used to add a task to a todo list.
+ */
 const    COMMAND_ADD = 'add';
 function command_add(Input $input) {
-    if (!todoFileExists(getcwd())) {
-        $cwdir = cwdir();
-        echo "Can\'t find todo.txt file in current directory ({$cwdir})";
+    $currentDirectory = getcwd();
+
+    if (!todoFileExists($currentDirectory)) {
+        echo "Can't find todo.txt file in current directory ({$currentDirectory}). Initialize todo list first";
+        return;
     }
 
     $arguments = $input->getArguments();
@@ -56,14 +68,43 @@ function command_add(Input $input) {
     }
     $lastLine++;
 
-    if ($lastLineContents !== "") {
+    if ($lastLineContents != "") {
         $todoFile->fwrite("\n");
         $lastLine++;
     }
 
     $todoFile->fwrite($task."\n");
 
-    echo "Added task \"$task\" on line {$lastLine}";
+    echo "Added task \"$task\" to ".todoFilePath($currentDirectory)." on line {$lastLine}";
+}
+
+/**
+ * Command used to see all tasks in todo list.
+ */
+const    COMMAND_LIST = 'list';
+function command_list(Input $input) {
+    $currentDirectory = getcwd();
+    if (!todoFileExists($currentDirectory)) {
+        echo "Can't find todo.txt file in current directory ({$currentDirectory}). Initialize todo list first.";
+        return;
+    }
+
+    $todoFile = openTodoFile($currentDirectory);
+
+    if ($todoFile->getSize() == 0) {
+        echo "Your todo list is empty";
+        return;
+    }
+
+    echo 'Tasks in '.todoFilePath($currentDirectory).":\n";
+    foreach ($todoFile as $lineNumber => $line) {
+        if ($line == "") {
+            continue;
+        }
+
+        $lineNumber++;
+        echo "{$lineNumber}: {$line}";
+    }
 }
 
 $input = new Input(tail($argv));
@@ -76,10 +117,16 @@ switch ($command) {
 
     case COMMAND_INIT:
         command_init($input);
+        echo "\n";
         break;
 
     case COMMAND_ADD:
         command_add($input);
+        echo "\n";
+        break;
+
+    case COMMAND_LIST:
+        command_list($input);
         break;
 
     case '':
@@ -89,5 +136,3 @@ switch ($command) {
         echo "Command unknown";
         break;
 }
-
-echo "\n";

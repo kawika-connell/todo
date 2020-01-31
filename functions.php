@@ -72,6 +72,10 @@ function tail(array $array): array {
     return $array;
 }
 
+function formatPath(string $directory) {
+    return str_replace('/', DIRECTORY_SEPARATOR, $directory);
+}
+
 /**
  * array_filter, but it doesn't preserve numerical keys.
  * ```
@@ -84,13 +88,13 @@ function filter(array $array, callable $callable): array {
 }
 
 function todoFilePath(string $directory) {
-    return "{$directory}/todo.txt";
+    return formatPath("{$directory}/todo.txt");
 }
 
 function todoFileExists(string $directory) {
     return file_exists(todoFilePath($directory));
 }
 
-function openTodoFile(string $directory, string $mode = 'wb') {
+function openTodoFile(string $directory, string $mode = 'r') {
     return new SplFileObject(todoFilePath($directory), $mode);
 }
