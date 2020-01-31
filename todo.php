@@ -32,9 +32,38 @@ DOC;
  */
 const    COMMAND_INIT = 'init';
 function command_init(Input $input) {
-    $currentDirectory = getcwd();
-    file_put_contents('todo.txt', '');
+    openTodoFile(getcwd())->fwrite('');
     echo "Created todo.txt in {$currentDirectory}";
+}
+
+const    COMMAND_ADD = 'add';
+function command_add(Input $input) {
+    if (!todoFileExists(getcwd())) {
+        $cwdir = cwdir();
+        echo "Can\'t find todo.txt file in current directory ({$cwdir})";
+    }
+
+    $arguments = $input->getArguments();
+
+    $task = $arguments[0];
+
+    $todoFile = openTodoFile(getcwd(), 'a+');
+    $lastLine = 0;
+    $lastLineContents = '';
+    foreach ($todoFile as $lineNumber => $line) {
+        $lastLine = $lineNumber;
+        $lastLineContents = $line;
+    }
+    $lastLine++;
+
+    if ($lastLineContents !== "") {
+        $todoFile->fwrite("\n");
+        $lastLine++;
+    }
+
+    $todoFile->fwrite($task."\n");
+
+    echo "Added task \"$task\" on line {$lastLine}";
 }
 
 $input = new Input(tail($argv));
@@ -47,6 +76,10 @@ switch ($command) {
 
     case COMMAND_INIT:
         command_init($input);
+        break;
+
+    case COMMAND_ADD:
+        command_add($input);
         break;
 
     case '':

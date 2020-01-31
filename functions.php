@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace KawikaConnell\Todo;
 
+use SplFileObject;
+
 use Closure;
 
 /**
@@ -79,4 +81,16 @@ function tail(array $array): array {
  */
 function filter(array $array, callable $callable): array {
     return reindex(array_filter($array, $callable));
+}
+
+function todoFilePath(string $directory) {
+    return "{$directory}/todo.txt";
+}
+
+function todoFileExists(string $directory) {
+    return file_exists(todoFilePath($directory));
+}
+
+function openTodoFile(string $directory, string $mode = 'wb') {
+    return new SplFileObject(todoFilePath($directory), $mode);
 }
