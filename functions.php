@@ -23,7 +23,14 @@ function compose(...$callables): Closure {
     };
 }
 
-function reIndex(array $array): array {
+/**
+ * Resets array numerical key count on an array.
+ * ```
+ * > reindex([1 => 'one', 2 => 'two', 3 => 'three']);
+ * [0 => 'one', 1 => 'two', 2 => 'three']
+ * ```
+ */
+function reindex(array $array): array {
     $returnNonAssoc = [];
     $returnAssoc = [];
     foreach ($array as $key => $element) {
@@ -57,13 +64,19 @@ function head(array $array) {
  * > tail(['one', 'two', 'three']);
  * ['two', 'three']
  * ```
- *
  */
 function tail(array $array): array {
     array_shift($array);
     return $array;
 }
 
+/**
+ * array_filter, but it doesn't preserve numerical keys.
+ * ```
+ * > filter(['one', 2, 3.0, '4'], 'is_string');
+ * [0 => 'one', 1 => '4']
+ * ```
+ */
 function filter(array $array, callable $callable): array {
-    return reIndex(array_filter($array, $callable));
+    return reindex(array_filter($array, $callable));
 }
