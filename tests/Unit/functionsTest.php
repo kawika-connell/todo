@@ -1,5 +1,7 @@
 <?php
 
+namespace KawikaConnell\Todo\Tests\Feature;
+
 use PHPUnit\Framework\TestCase;
 
 use function KawikaConnell\Todo\head;

@@ -1,7 +1,8 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
+namespace KawikaConnell\Todo\Tests\Feature;
 
+use PHPUnit\Framework\TestCase;
 use KawikaConnell\Todo\Input;
 
 class InputTest extends TestCase
