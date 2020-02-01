@@ -1,6 +1,8 @@
 #!/usr/bin/env php
 <?php
 
+declare(strict_types=1);
+
 namespace KawikaConnell\Todo;
 
 require __DIR__.'/todo.php';

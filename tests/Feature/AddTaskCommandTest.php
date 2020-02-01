@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace KawikaConnell\Todo\Tests\Feature;
 
 use function KawikaConnell\Todo\main;
