@@ -34,6 +34,6 @@ class TestCase extends BaseTestCase
         parent::tearDown();
     }
 
-    protected function _command(string $string): Input
-    { return new Input(explode(' ', $string)); }
+    protected function _command(...$arguments): Input
+    { return new Input($arguments); }
 }

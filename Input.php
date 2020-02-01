@@ -21,7 +21,7 @@ class Input
     protected $arguments = [];
 
     /**
-     * The options, 'todo <command>  -<option_1> --<option_2>'
+     * The options, 'todo <command> -<opt1> --<option_2>'
      *
      * @var array[int => string]
      */

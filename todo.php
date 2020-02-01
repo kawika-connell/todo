@@ -86,14 +86,15 @@ const    COMMAND_LIST = 'list';
 function command_list(Input $input) {
     $currentDirectory = getcwd();
     if (!todoFileExists($currentDirectory)) {
-        echo "Can't find todo.txt file in current directory ({$currentDirectory}). Initialize todo list first.";
+        echo "Can't find todo.txt file in current directory ({$currentDirectory}). Initialize todo list first";
         return;
     }
 
+    clearstatcache();
     $todoFile = openTodoFile($currentDirectory);
 
     if ($todoFile->getSize() == 0) {
-        echo "Your todo list is empty";
+        echo "Your todo list in ".todoFilePath($currentDirectory)." is empty";
         return;
     }
 
@@ -104,7 +105,7 @@ function command_list(Input $input) {
         }
 
         $lineNumber++;
-        echo "{$lineNumber}: {$line}";
+        echo "{$lineNumber}. {$line}";
     }
 }
 
@@ -112,7 +113,7 @@ const    COMMAND_MARK = 'mark';
 function command_mark(Input $input) {
     $currentDirectory = getcwd();
     if (!todoFileExists($currentDirectory)) {
-        echo "Can't find todo.txt file in current directory ({$currentDirectory}). Initialize todo list first.";
+        echo "Can't find todo.txt file in current directory ({$currentDirectory}). Initialize todo list first";
         return;
     }
 
@@ -122,7 +123,7 @@ function command_mark(Input $input) {
     $todoFile    = openTodoFile($currentDirectory, 'r');
 
     if ($todoFile->getSize() == 0) {
-        echo "Your todo list is empty";
+        echo "Your todo list in ".todoFilePath($currentDirectory)." is empty";
         return;
     }
 
@@ -155,7 +156,18 @@ function command_mark(Input $input) {
 
 function main(Input $input) {
     $command = $input->getCommand() ?? COMMAND_INDEX;
+    $quiet = false;
 
+    if (
+        in_array('-q', $input->getOptions())
+            or
+        in_array('--quiet', $input->getOptions())
+    ) {
+        $quiet = true;
+        ob_start();
+    }
+
+    $printNewLine = true;
     switch ($command) {
         case COMMAND_INDEX:
             echo COMMAND_INDEX_MESSAGE;
@@ -183,4 +195,8 @@ function main(Input $input) {
     }
 
     echo "\n";
+
+    if ($quiet) {
+        ob_end_clean();
+    }
 }
