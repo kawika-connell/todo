@@ -39,7 +39,7 @@ function command_init(Input $input) {
         return;
     }
 
-    openTodoFile($currentDirectory)->fwrite('');
+    openTodoFile($currentDirectory, 'w')->fwrite('');
     echo "Created todo.txt in {$currentDirectory}";
 }
 
@@ -107,6 +107,51 @@ function command_list(Input $input) {
     }
 }
 
+const    COMMAND_MARK = 'mark';
+function command_mark(Input $input) {
+    $currentDirectory = getcwd();
+    if (!todoFileExists($currentDirectory)) {
+        echo "Can't find todo.txt file in current directory ({$currentDirectory}). Initialize todo list first.";
+        return;
+    }
+
+    $taskToMark = $input->getArguments()[0];
+    $markAs     = $input->getArguments()[1];
+
+    $todoFile    = openTodoFile($currentDirectory, 'r');
+
+    if ($todoFile->getSize() == 0) {
+        echo "Your todo list is empty";
+        return;
+    }
+
+    $temporaryTodoFilePath = __DIR__.'/data/temporary';
+    $newTodoFile = openTodoFile($temporaryTodoFilePath, 'w');
+
+    $newTodoFileContents = '';
+    foreach ($todoFile as $lineNumber => $line) {
+        $lineNumber++;
+
+        if ((int) $lineNumber == $taskToMark) {
+            $newTodoFile->fwrite("[{$markAs}] {$line}");
+            continue;
+        }
+
+        $newTodoFile->fwrite($line);
+    }
+
+    unset($todoFile);
+
+    unlink(todoFilePath($currentDirectory));
+    copy(
+        todoFilePath($temporaryTodoFilePath),
+        todoFilePath($currentDirectory)
+    );
+    unlink(todoFilePath($temporaryTodoFilePath));
+
+    echo "Marked task on line {$taskToMark} as [{$markAs}]";
+}
+
 $input = new Input(tail($argv));
 $command = $input->getCommand() ?? COMMAND_INDEX;
 
@@ -129,7 +174,8 @@ switch ($command) {
         command_list($input);
         break;
 
-    case '':
+    case COMMAND_MARK:
+        command_mark($input);
         break;
 
     default:
