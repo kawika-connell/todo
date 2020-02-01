@@ -14,7 +14,7 @@ use Closure;
  * > compose('strtoupper', 'str_split')('hello') == str_split(strtoupper('hello'))
  * ```
  *
- * @param [array => callable] $callables
+ * @param array[callable] $callables
  */
 function compose(...$callables): Closure {
     return function($input) use ($callables) {
@@ -72,10 +72,6 @@ function tail(array $array): array {
     return $array;
 }
 
-function formatPath(string $directory) {
-    return str_replace('/', DIRECTORY_SEPARATOR, $directory);
-}
-
 /**
  * array_filter, but it doesn't preserve numerical keys.
  * ```
@@ -85,6 +81,10 @@ function formatPath(string $directory) {
  */
 function filter(array $array, callable $callable): array {
     return reindex(array_filter($array, $callable));
+}
+
+function formatPath(string $directory) {
+    return str_replace('/', DIRECTORY_SEPARATOR, $directory);
 }
 
 function todoFilePath(string $directory) {

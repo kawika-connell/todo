@@ -74,7 +74,6 @@ function command_add(Input $input) {
     }
 
     $todoFile->fwrite($task."\n");
-
     echo "Added task \"$task\" to ".todoFilePath($currentDirectory)." on line {$lastLine}";
 }
 
@@ -152,33 +151,34 @@ function command_mark(Input $input) {
     echo "Marked task on line {$taskToMark} as [{$markAs}]";
 }
 
-$input = new Input(tail($argv));
-$command = $input->getCommand() ?? COMMAND_INDEX;
+function main(Input $input) {
+    $command = $input->getCommand() ?? COMMAND_INDEX;
 
-switch ($command) {
-    case COMMAND_INDEX:
-        echo COMMAND_INDEX_MESSAGE;
-        break;
+    switch ($command) {
+        case COMMAND_INDEX:
+            echo COMMAND_INDEX_MESSAGE;
+            break;
 
-    case COMMAND_INIT:
-        command_init($input);
-        echo "\n";
-        break;
+        case COMMAND_INIT:
+            command_init($input);
+            break;
 
-    case COMMAND_ADD:
-        command_add($input);
-        echo "\n";
-        break;
+        case COMMAND_ADD:
+            command_add($input);
+            break;
 
-    case COMMAND_LIST:
-        command_list($input);
-        break;
+        case COMMAND_LIST:
+            command_list($input);
+            break;
 
-    case COMMAND_MARK:
-        command_mark($input);
-        break;
+        case COMMAND_MARK:
+            command_mark($input);
+            break;
 
-    default:
-        echo "Command unknown";
-        break;
+        default:
+            echo "Command unknown";
+            break;
+    }
+
+    echo "\n";
 }

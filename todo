@@ -1,4 +1,10 @@
 #!/usr/bin/env php
 <?php
 
+namespace KawikaConnell\Todo;
+
 require __DIR__.'/todo.php';
+
+$input = new Input(tail($argv));
+
+main($input);
