@@ -19,7 +19,7 @@ Todo CLI - Version 0.1.0
 Usage:
   command [options] [arguments]
 
-  Options:                                                                                                                                                                                                        
+  Options:
     -h, --help     Display this help message
     -q, --quiet    Do not output any message
     -V, --version  Display this application version
@@ -27,6 +27,8 @@ Usage:
 
   Available commands:
     init  Creates a todo list in the current directory
+    add   Adds a task to the todo list
+    mark  Changes the status of a task
 DOC;
 
 /**
