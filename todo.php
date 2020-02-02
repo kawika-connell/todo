@@ -120,6 +120,7 @@ function command_mark(Input $input) {
     $taskToMark = $input->getArguments()[0];
     $markAs     = $input->getArguments()[1];
 
+    clearstatcache();
     $todoFile    = openTodoFile($currentDirectory, 'r');
 
     if ($todoFile->getSize() == 0) {
@@ -127,29 +128,32 @@ function command_mark(Input $input) {
         return;
     }
 
-    $temporaryTodoFilePath = __DIR__.'/data/temporary';
-    $newTodoFile = openTodoFile($temporaryTodoFilePath, 'w');
+    $temporaryTodoFileDirectory = __DIR__.'/data/temporary';
+    $temporaryTodoFile = openTodoFile($temporaryTodoFileDirectory, 'w');
 
     $newTodoFileContents = '';
     foreach ($todoFile as $lineNumber => $line) {
         $lineNumber++;
 
         if ((int) $lineNumber == $taskToMark) {
-            $newTodoFile->fwrite("[{$markAs}] {$line}");
+            $temporaryTodoFile->fwrite("[{$markAs}] {$line}");
             continue;
         }
 
-        $newTodoFile->fwrite($line);
+        $temporaryTodoFile->fwrite($line);
     }
 
     unset($todoFile);
-
     unlink(todoFilePath($currentDirectory));
+
     copy(
-        todoFilePath($temporaryTodoFilePath),
+        todoFilePath($temporaryTodoFileDirectory),
         todoFilePath($currentDirectory)
     );
-    unlink(todoFilePath($temporaryTodoFilePath));
+
+    $temporaryTodoFilePath = $temporaryTodoFile->getPathname();
+    unset($temporaryTodoFile);
+    unlink($temporaryTodoFilePath);
 
     echo "Marked task on line {$taskToMark} as [{$markAs}]";
 }
